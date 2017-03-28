@@ -1,5 +1,8 @@
 package com.example;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.predix.dao.AppoinmentDetails;
 import com.predix.dao.TableDataOperations;
+import com.predix.model.Appointment;
 import com.predix.model.Company;
 import com.predix.model.User;
 
@@ -97,4 +101,35 @@ public class GreetingController {
 		}
 		return "FAIL";
 	}
+	
+	@RequestMapping(value="/insertAppointment", method=RequestMethod.POST)
+	public String insertAppointment(@RequestBody Appointment appoint) {
+		try {
+			AppoinmentDetails ad = new AppoinmentDetails();
+			
+			// 1) create a java calendar instance
+			Calendar calendar = Calendar.getInstance();
+
+			// 2) get a java.util.Date from the calendar instance.
+//			    this date will represent the current instant, or "now".
+			java.util.Date now = calendar.getTime();
+
+			// 3) a java current time (now) instance
+			java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
+			
+			HashMap<Integer, String> hm = new HashMap<Integer, String>();
+			hm.put(new Integer(1), appoint.getDoctor());
+			hm.put(new Integer(2), currentTimestamp.toString());
+			hm.put(new Integer(3), currentTimestamp.toString());
+			hm.put(new Integer(4), appoint.getPatientName());
+			//hm.put(new Integer(2), appoint.setStatus(true);
+			
+			return ad.insertAppointment(appoint);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "FAIL";
+	}
+	
 }

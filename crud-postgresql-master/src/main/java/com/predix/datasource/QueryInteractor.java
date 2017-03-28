@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,6 +18,8 @@ import java.util.Properties;
 import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
+
+import com.predix.model.Appointment;
 
 public class QueryInteractor {
 
@@ -96,12 +99,8 @@ public class QueryInteractor {
 		try {
 
 			moDbConn = manager.getConnection();
-
-			//moDbConn.setAutoCommit(false);
-
 			lo_PrepareStmt1 = moDbConn.prepareStatement(pQryStmt);
-			
-
+		
 			if(valueMap != null )
 			{
 				for (Iterator itr = valueMap.keySet().iterator(); itr.hasNext(); ) {
@@ -116,39 +115,9 @@ public class QueryInteractor {
 				logger.debug("Hash MAp Retrieved");
 			}
 			logger.debug("Query String Before execute "+pQryStmt);
+			System.out.println("Query String Before execute "+pQryStmt);
 			int flag1= lo_PrepareStmt1.executeUpdate();
-			/*flag=flag1;
-			logger.debug("The value of flag = " + flag);
-			if(flag1)
-			{
-				Object[] listMetaObj = null;
-				ResultSetMetaData lo_RsMeta      = null;
-				int lo_ColCount     = 0;
-				int l_RowCount      = 0;
-				int i=0;
-
-				lo_ResultSet1     = lo_PrepareStmt1.getResultSet();
-				lo_RsMeta        = lo_ResultSet1.getMetaData();
-				lo_ColCount      = lo_RsMeta.getColumnCount();
-
-				// Getting Meta Data for the Query
-				listMetaObj = new Object[lo_ColCount];
-				for ( i=0; i<lo_ColCount ; i++)	{
-					listMetaObj[i] = lo_RsMeta.getColumnLabel(i+1);
-				}
-				lo_ResAList.add(l_RowCount++, listMetaObj.toString());
-
-				// Getting DataPart
-				while (lo_ResultSet1.next())	{
-					Object[] listColumnObj = new Object[lo_ColCount];
-					for ( i=0; i<lo_ColCount; i++ )   {
-						listColumnObj[i] = lo_ResultSet1.getObject(i+1);
-						//               logger.debug("Resuleset Value"+listColumnObj[i].toString());
-					}
-					lo_ResAList.add(l_RowCount++, listColumnObj);
-				}
-				logger.debug("Fetch from database");
-			}*/
+			
 		}
 		catch(Exception e)
 		{
@@ -347,6 +316,48 @@ public class QueryInteractor {
 		return null;
 	}
 
+	public ArrayList insertAppointmentDB(String pQryStmt, Appointment appoint) {
+
+		ArrayList lo_ResAList = new ArrayList();
+		ResultSet lo_ResultSet1      = null;
+		PreparedStatement lo_PrepareStmt1 = null;
+		PreparedStatement lo_PrepareStmt2 = null;
+		logger.debug("inside getArrayList() ");
+		logger.debug("Query String "+pQryStmt);
+		Connection moDbConn=null;
+		PreparedStatement lo_PrepareStmt = null;
+		try {
+			Calendar calendar = Calendar.getInstance();
+			java.util.Date now = calendar.getTime();
+			java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
+			
+			moDbConn = manager.getConnection();
+			lo_PrepareStmt1 = moDbConn.prepareStatement(pQryStmt);
+			
+			lo_PrepareStmt1.setString(1,appoint.getDoctor());
+			lo_PrepareStmt1.setTimestamp(2,currentTimestamp);
+			lo_PrepareStmt1.setTimestamp(3,currentTimestamp);
+			lo_PrepareStmt1.setString(4,appoint.getPatientName());
+
+			logger.debug("Query String Before execute "+pQryStmt);
+			System.out.println("Query String Before execute "+pQryStmt);
+			int flag1= lo_PrepareStmt1.executeUpdate();
+			
+			System.out.println("success" + flag1);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			logger.fatal("Failed to fetch from database");
+		}
+		finally
+		{
+			DBUtility.closeResultSet(lo_ResultSet1);
+			DBUtility.closePreparedStatement(lo_PrepareStmt1);
+			DBUtility.closeConnection(moDbConn);
+		}
+		return lo_ResAList;
+	}
 	/*public static void main(String args[]) {
 		QueryInteractor marsqi = new QueryInteractor();
 		
