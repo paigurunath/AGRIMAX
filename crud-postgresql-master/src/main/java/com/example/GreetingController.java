@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.predix.dao.AppoinmentDetails;
 import com.predix.dao.TableDataOperations;
 import com.predix.model.Company;
+import com.predix.model.User;
 
 @RestController
 public class GreetingController {
@@ -79,5 +81,20 @@ public class GreetingController {
 		return null;
 	}
 	
-   
+	@RequestMapping(value="/insertUser", method=RequestMethod.POST)
+	public String insertUser(@RequestBody User user) {
+		try {
+			AppoinmentDetails ad = new AppoinmentDetails();
+			
+			HashMap<Integer, String> hm = new HashMap<Integer, String>();
+			hm.put(new Integer(1), user.getName());
+			hm.put(new Integer(2), user.getType());
+			
+			return ad.insertUser(hm);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "FAIL";
+	}
 }

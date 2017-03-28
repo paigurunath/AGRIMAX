@@ -7,4 +7,9 @@ public class Query {
 	public static String UPDATE_AGRO = "UPDATE agro SET status = ? where appname = ?";
 	public static String VIEW_AGRO = "SELECT status, appname FROM AGRO where appname=?";
 	
+	public static String INSERT_DOCTOR = "INSERT INTO public.app_user (name,type) VALUES (?,?)";
+	public static String INSERT_APPOINTMENT = "";
+	public static String VIEW_APPOINTMENT_BY_DATE = "";
+	
+	
 }

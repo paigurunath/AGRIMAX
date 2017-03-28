@@ -69,7 +69,7 @@ public class DBConnectionManager {
 			*/
 	        //	jdbc:mysql://localhost:3306/dbname
 	        Class.forName("org.postgresql.Driver");
-			con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres","postgres","postgresql");
+			con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres","postgres","pgadmin");
 			//con = DriverManager.getConnection("jdbc:postgresql://10.72.6.143:5432/d4f75b567496b451faab35fbf9dfb09b3","u7464a12a5e524cd4a4ec5bce7292c339","1077626664524c6695b5244ca8402113");
 			
 			if (con != null) {
